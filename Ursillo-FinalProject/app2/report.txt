@@ -1,0 +1,19 @@
+//Complexity O(n)
+LIST* createDataSet(int maxElts);
+
+//Complexity O(n)
+void destroyDataSet (LIST *lt);
+
+//Complexity O(n)
+int searchID (LIST* lt, int id);
+
+//Complexity O(1)
+void insertion (LIST* lt, int id, int age, char* name);
+
+//Complexity O(n)
+void deletion (LIST* lt, int id);
+
+I chose to use an array as my data structure because most of the complexities were either O(1) or O(n). I found that it was more efficient
+than the other data structures and that it worked better for this assignment in particular. For insertion, it was more beneficial to use
+an array since the data was unsorted and we could just add elements to the end of the array. Overall, an array data structure was most
+efficient for this project because it did not require complex operations and it was not sorted which made using an array much more feasiable.

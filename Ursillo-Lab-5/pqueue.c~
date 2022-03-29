@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "pqueue.h"
+#include <string.h>
+#include <assert.h>
+
+
+typedef struct pqueue {
+
+	int count;/* number of entries in array */
+	int length;/* length of allocated array  */
+	void **data;/* allocated array of entries */
+	int (*compare)();/* comparison function*/
+
+} PQ;
+
+PQ *createQueue(int (*compare)()) {
+
+PQ* pq = malloc(sizeof(PQ));
+pq->length = 10;
+pq->count = 0;
+pq->data = (void*) malloc(sizeof(void*) * pq->length);
+pq->compare = compare;
+
+return pq;
+
+}
+
+void destroyQueue(PQ* pq) {
+
+int i;
+
+assert (pq != NULL);
+
+for (i = 0; i < pq->count; i++) {
+
+	free(pq->data[i]);
+
+}
+
+free(pq);
+
+
+}
+
+int numEntries(PQ* pq) {
+
+return pq->count;
+
+}
+
+void addEntry(PQ* pq, void* entry) {
+
+int i;
+void* temp;
+
+if (pq->count == pq->length) {
+
+pq->length *= 2;
+
+pq->data = (void*) realloc(pq->data, sizeof(pq->length));
+
+}
+
+
+pq->data[pq->count] = entry;
+pq->count++;
+
+
+for (i = pq->count-1; i > 0; i = ((i-1)/2)) {
+
+if (pq->compare(entry, pq->data[(i-1)/2]) == -1) {
+
+temp = pq->data[(i-1)/2];
+pq->data[i] = temp;
+pq->data[(i-1)/2] = entry;
+
+}
+
+
+}
+
+
+}
+
+void* removeEntry(PQ *pq) {
+
+void* root;
+void* temp;
+int i = 0;
+
+root = pq->data[0];
+pq->data[0] = pq->data[pq->count - 1];
+
+while (pq->data[(2*i)+1] != NULL) {
+
+if (pq->compare(pq->data[((2*i)+1)], pq->data[i]) == -1) {
+	if (pq->compare(pq->data[((2*i)+1)], pq->data[((2*i)+2)]) == -1) {
+
+temp = pq->data[((2*i)+1)];
+pq->data[((2*i)+1)] = pq->data[i];
+pq->data[i] = temp;
+
+i = (2*i)+1;
+
+}
+}
+
+if (pq->compare(pq->data[((2*i)+2)], pq->data[i]) == -1) {
+	if (pq->compare(pq->data[((2*i)+2)], pq->data[((2*i)+1)]) == -1) {
+
+temp = pq->data[((2*i)+2)];
+pq->data[((2*i)+2)] = pq->data[i];
+pq->data[i] = temp;
+i = (2*i)+2;
+
+}
+}
+
+
+
+}
+
+pq->count--;
+return root;
+
+}
